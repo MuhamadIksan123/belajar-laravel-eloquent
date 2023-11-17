@@ -11,3 +11,9 @@ select * from vouchers;
 describe comments;
 
 select * from comments;
+
+select * from customers;
+
+select * from wallets;
+
+select * from virtual_accounts;
