@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Facades\Date;
 
 class Customer extends Model
 {
@@ -15,6 +18,7 @@ class Customer extends Model
     protected $keyType = 'string';
     public $incrementing = false;
     public $timestamps = false;
+    protected $with = ["wallet"];
 
     public function wallet(): HasOne
     {
@@ -29,5 +33,25 @@ class Customer extends Model
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class, "customer_id", "id");
+    }
+
+    public function likeProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, "customers_likes_products", "customer_id", "product_id")
+        ->withPivot("created_at")
+        ->using(Like::class);
+    }
+
+    public function likeProductsLastWeeks(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, "customers_likes_products", "customer_id", "product_id")
+        ->withPivot("created_at")
+        ->wherePivot("created_at", ">=", Date::now()->addDay(-7))
+        ->using(Like::class);
+    }
+
+    public function image(): MorphOne
+    {
+        return $this->morphOne(Image::class, "imageable");
     }
 }
