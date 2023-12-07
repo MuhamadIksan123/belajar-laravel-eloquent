@@ -5,8 +5,11 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\Product;
 use Database\Seeders\CategorySeeder;
+use Database\Seeders\CommentSeeder;
 use Database\Seeders\ImageSeeder;
 use Database\Seeders\ProductSeeder;
+use Database\Seeders\TagSeeder;
+use Database\Seeders\VoucherSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Log;
@@ -63,7 +66,7 @@ class ProductsTest extends TestCase
 
         $comments = $product->comments;
         foreach ($comments as $comment) {
-            self::assertEquals(Product::class, $comment->commentable_type);
+            self::assertEquals("product", $comment->commentable_type);
             self::assertEquals($product->id, $comment->commentable_id);
         }
     }
@@ -87,16 +90,17 @@ class ProductsTest extends TestCase
         $this->seed([CategorySeeder::class, ProductSeeder::class, VoucherSeeder::class, TagSeeder::class]);
 
         $product = Product::find("1");
-        self::assertNotNull($product);
-
         $tags = $product->tags;
+        self::assertNotNull($tags);
+        self::assertCount(1, $tags);
 
-        foreach ($tags as $tag) {
+        foreach ($tags as $tag){
             self::assertNotNull($tag->id);
             self::assertNotNull($tag->name);
 
-            $voucher = $tag->voucher;
-            self::assertNotNull($voucher);
+            $vouchers = $tag->vouchers;
+            self::assertNotNull($vouchers);
+            self::assertCount(1, $vouchers);
         }
     }
 

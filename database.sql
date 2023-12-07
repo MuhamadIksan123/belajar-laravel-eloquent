@@ -26,3 +26,6 @@ select * from customers;
 
 select * from images;
 
+select * from persons;
+
+select * from employees;

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string("name", 100)->nullable(false);
             $table->string("title", 100)->nullable(false);
             $table->bigInteger("salary")->nullable(false);
-            $table->
+            $table->timestamps();
         });
     }
 
